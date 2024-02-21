@@ -1,6 +1,7 @@
 package com.quickscythe.silver.gdx;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -14,6 +15,7 @@ public class Drop extends ApplicationAdapter {
 
     @Override
     public void create() {
+        ApplicationListener app = null;
 //        // load the images for the droplet and the bucket, 64x64 pixels each
 //        dropImage = new Texture(Gdx.files.internal("droplet.png"));
 //        bucketImage = new Texture(Gdx.files.internal("bucket.png"));
