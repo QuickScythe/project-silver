@@ -2,15 +2,14 @@ package com.quickscythe.silver.utils.sounds;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import javazoom.jl.player.advanced.AdvancedPlayer;
-import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
 
 public class GameSound extends PlaybackListener implements Runnable {
 
-    private AdvancedPlayer player;
+
 
     public void play() {
+
 
         Sound sound = Gdx.audio.newSound(Gdx.files.internal("audio/raid.mp3"));
         sound.play(1F);
@@ -42,22 +41,11 @@ public class GameSound extends PlaybackListener implements Runnable {
 
     // PlaybackListener members
 
-    public void playbackStarted(PlaybackEvent playbackEvent) {
-        System.out.println("playbackStarted");
-    }
-
-    public void playbackFinished(PlaybackEvent playbackEvent) {
-        System.out.println("playbackEnded");
-    }
 
     // Runnable members
 
     public void run() {
-        try {
-            this.player.play();
-        } catch (javazoom.jl.decoder.JavaLayerException ex) {
-            ex.printStackTrace();
-        }
+
 
     }
 
