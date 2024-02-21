@@ -18,7 +18,7 @@
 
 ---------------  S U M M A R Y ------------
 
-Command Line: -agentlib:jdwp=transport=dt_socket,address=127.0.0.1:54492,suspend=y,server=n -javaagent:C:\Users\Camer\AppData\Local\JetBrains\IdeaIC2023.2\captureAgent\debugger-agent.jar -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 com.quickscythe.titanium.Main leveleditor
+Command Line: -agentlib:jdwp=transport=dt_socket,address=127.0.0.1:54492,suspend=y,server=n -javaagent:C:\Users\Camer\AppData\Local\JetBrains\IdeaIC2023.2\captureAgent\debugger-agent.jar -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 com.quickscythe.silver.Main leveleditor
 
 Host: AMD Ryzen 3 3100 4-Core Processor              , 8 cores, 11G,  Windows 10 , 64 bit Build 19041 (10.0.19041.3636)
 Time: Fri Feb  2 16:40:53 2024 Central Standard Time elapsed time: 304.551279 seconds (0d 0h 5m 4s)
@@ -502,9 +502,9 @@ Event: 260.611 Thread 0x0000023d7d06aa60 2985 % !   4       sun.java2d.Disposer:
 Event: 260.627 Thread 0x0000023d7d06aa60 nmethod 2985% 0x0000023d6c18e290 code [0x0000023d6c18e4e0, 0x0000023d6c18f4b0]
 Event: 301.340 Thread 0x0000023d7d0769a0 2986  s    3       java.util.Properties::put (10 bytes)
 Event: 301.340 Thread 0x0000023d7d0769a0 nmethod 2986 0x0000023d64f24090 code [0x0000023d64f24240, 0x0000023d64f244e8]
-Event: 301.417 Thread 0x0000023d7d0769a0 2987       3       com.quickscythe.titanium.game.object.entity.Entity::update (665 bytes)
+Event: 301.417 Thread 0x0000023d7d0769a0 2987       3       com.quickscythe.silver.game.object.entity.Entity::update (665 bytes)
 Event: 301.419 Thread 0x0000023d7d0769a0 nmethod 2987 0x0000023d64f24610 code [0x0000023d64f24bc0, 0x0000023d64f27d28]
-Event: 303.215 Thread 0x0000023d7d06aa60 2988       4       com.quickscythe.titanium.game.object.entity.Entity::update (665 bytes)
+Event: 303.215 Thread 0x0000023d7d06aa60 2988       4       com.quickscythe.silver.game.object.entity.Entity::update (665 bytes)
 Event: 303.501 Thread 0x0000023d7d06aa60 nmethod 2988 0x0000023d6c18fc10 code [0x0000023d6c1906c0, 0x0000023d6c199190]
 Event: 304.292 Thread 0x0000023d7d0769a0 2989       3       java.util.concurrent.ConcurrentHashMap$BaseIterator::<init> (21 bytes)
 Event: 304.292 Thread 0x0000023d7d0769a0 nmethod 2989 0x0000023d64976110 code [0x0000023d649762c0, 0x0000023d649764d8]
@@ -898,7 +898,7 @@ symbol engine: initialized successfully - sym options: 0x614 - pdb path: .;C:\Pr
 
 VM Arguments:
 jvm_args: -agentlib:jdwp=transport=dt_socket,address=127.0.0.1:54492,suspend=y,server=n -javaagent:C:\Users\Camer\AppData\Local\JetBrains\IdeaIC2023.2\captureAgent\debugger-agent.jar -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 
-java_command: com.quickscythe.titanium.Main leveleditor
+java_command: com.quickscythe.silver.Main leveleditor
 java_class_path (initial): C:\Users\Quick\Development\Workspaces\Intellij\project-silver\target\classes;C:\Users\Camer\.m2\repository\com\github\WilliamAHartman\Jamepad\1.4.0\Jamepad-1.4.0.jar;C:\Users\Camer\.m2\repository\uk\co\electronstudio\sdl2gdx\sdl2gdx\1.0.4\sdl2gdx-1.0.4.jar;C:\Users\Camer\.m2\repository\com\badlogicgames\gdx\gdx\1.9.9\gdx-1.9.9.jar;C:\Users\Camer\.m2\repository\com\badlogicgames\gdx\gdx-controllers\1.9.9\gdx-controllers-1.9.9.jar;C:\Users\Camer\.m2\repository\com\badlogicgames\gdx\gdx-jnigen\1.9.10\gdx-jnigen-1.9.10.jar;C:\Users\Camer\.m2\repository\com\github\javaparser\javaparser-core\2.3.0\javaparser-core-2.3.0.jar;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2023.2.3\lib\idea_rt.jar
 Launcher Type: SUN_STANDARD
 
