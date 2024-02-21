@@ -8,4 +8,7 @@ public interface EntityController {
     public boolean requestingRight();
     public double getX();
     public double getY();
+
+    public boolean requestingPause();
+    public boolean requestingMenu();
 }

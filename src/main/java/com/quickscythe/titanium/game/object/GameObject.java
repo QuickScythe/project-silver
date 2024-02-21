@@ -1,21 +1,22 @@
 package com.quickscythe.titanium.game.object;
 
 import com.quickscythe.titanium.game.Camera;
+import com.quickscythe.titanium.utils.Direction;
 import com.quickscythe.titanium.utils.GameUtils;
 import com.quickscythe.titanium.utils.Location;
+import com.quickscythe.titanium.utils.sprites.Sprite;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameObject {
 
-    protected BufferedImage image = null;
+    protected Sprite sprite = null;
     protected List<GameObject> intersections = new ArrayList<>();
-    protected boolean collidable = false;
-    protected int width = 10;
-    protected int height = 10;
+    protected List<Direction> collision_directions = new ArrayList<>();
+    protected int width = GameUtils.TILE_SIZE;
+    protected int height = GameUtils.TILE_SIZE;
     Location location;
     Rectangle bounds;
 
@@ -28,14 +29,25 @@ public class GameObject {
         bounds.setBounds((int) (location.getX() - ((width / 2))), (int) (location.getY() - ((height / 2))), (int) (width), (int) (height));
     }
 
+    public Sprite getSprite() {
+        return sprite;
+    }
+
+    public void setSprite(Sprite sprite) {
+        this.sprite = sprite;
+
+    }
+
+
     public void draw(Graphics g, Camera camera) {
 
 
-        if(camera!=null) {
-            if (image == null)
+        if (camera != null) {
+            if (getSprite() == null)
                 g.fillRect((int) (getRelativeX(camera) - getRelativeWidth(camera) / 2), (int) (getRelativeY(camera) - getRelativeHeight(camera) / 2), getRelativeWidth(camera), getRelativeHeight(camera));
             else {
-                g.drawImage(image, (int) (getRelativeX(camera) - getRelativeWidth(camera) / 2), (int) (getRelativeY(camera) - getRelativeHeight(camera) / 2), getRelativeWidth(camera), getRelativeHeight(camera), null);
+
+                g.drawImage(getSprite().getImage(), (int) (getRelativeX(camera) - getRelativeWidth(camera) / 2), (int) (getRelativeY(camera) - getRelativeHeight(camera) / 2), getRelativeWidth(camera), getRelativeHeight(camera), null);
             }
         }
 
@@ -46,27 +58,22 @@ public class GameObject {
         }
     }
 
-    public int getRelativeWidth(Camera camera){
+    public int getRelativeWidth(Camera camera) {
         return (int) (bounds.getWidth());
     }
 
-    public int getRelativeHeight(Camera camera){
+    public int getRelativeHeight(Camera camera) {
         return (int) (bounds.getHeight());
 
     }
 
-    public void setImage(BufferedImage image){
-        this.image = image;
-
-    }
-
     public int getRelativeX(Camera camera) {
-        return (int) (getLocation().getX() - (camera.getViewport().getBounds().getMinX()) );
+        return (int) (getLocation().getX() - (camera.getViewport().getBounds().getMinX()));
 //        return (int) (((bounds.getX() + (width / 2)) - camera.getViewport().getX()) * camera.getScaleX());
     }
 
     public int getRelativeY(Camera camera) {
-        return (int) (getLocation().getY() - (camera.getViewport().getBounds().getMinY()) );
+        return (int) (getLocation().getY() - (camera.getViewport().getBounds().getMinY()));
 //        return (int) (((bounds.getY() + (height / 2)) - camera.getViewport().getY()) * camera.getScaleY());
     }
 
@@ -79,6 +86,10 @@ public class GameObject {
     }
 
     public boolean isCollidable() {
-        return collidable;
+        return !collision_directions.isEmpty();
+    }
+
+    public boolean collides(Direction direction) {
+        return collision_directions.contains(direction);
     }
 }

@@ -9,4 +9,8 @@ public interface GuiInterface {
     public void unclick();
 
     public void unhover();
+
+    public void display();
+
+    public void hide();
 }

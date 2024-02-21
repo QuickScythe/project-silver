@@ -14,7 +14,7 @@ public class GamepadController implements EntityController {
     @Override
     public boolean requestingUp() {
         ControllerState state = GameUtils.getControllerManager().getState(id);
-        return state.a;
+        return state.leftStickY > 0.15 || state.dpadUp;
     }
 
     @Override
@@ -45,5 +45,17 @@ public class GamepadController implements EntityController {
     public double getY() {
         ControllerState state = GameUtils.getControllerManager().getState(id);
         return state.leftStickY;
+    }
+
+    @Override
+    public boolean requestingPause() {
+        ControllerState state = GameUtils.getControllerManager().getState(id);
+        return state.guide;
+    }
+
+    @Override
+    public boolean requestingMenu() {
+        ControllerState state = GameUtils.getControllerManager().getState(id);
+        return state.back;
     }
 }

@@ -12,7 +12,6 @@ public class Platform extends GameObject {
     public Platform(Location location) {
         super(location);
         this.height = 5;
-        this.collidable = true;
     }
 
     public void setWidth(int width){

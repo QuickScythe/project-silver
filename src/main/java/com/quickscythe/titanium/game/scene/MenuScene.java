@@ -1,23 +1,26 @@
-package com.quickscythe.titanium.game.board;
+package com.quickscythe.titanium.game.scene;
 
 import com.quickscythe.titanium.Main;
 import com.quickscythe.titanium.game.Camera;
 import com.quickscythe.titanium.gui.GuiButton;
 import com.quickscythe.titanium.gui.GuiElement;
 import com.quickscythe.titanium.utils.GameUtils;
+import com.quickscythe.titanium.utils.InputListener;
 import com.quickscythe.titanium.utils.Location;
 import com.quickscythe.titanium.utils.Resources;
+import com.quickscythe.titanium.utils.sounds.AudioManager;
+import com.quickscythe.titanium.utils.sounds.Sounds;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MenuScene implements Scene, MouseMotionListener, MouseListener {
+public class MenuScene implements Scene, InputListener {
 
     Map<Integer, Image> parallax_backgrounds = new HashMap<>();
     double i;
@@ -25,18 +28,21 @@ public class MenuScene implements Scene, MouseMotionListener, MouseListener {
     List<GuiElement> gui_elements = new ArrayList<>();
 
 
-    public MenuScene() {
+    MenuScene() {
+        GameUtils.getInputManager().addListener(this);
         GameUtils.Backgrounds.MENU.loadMap(parallax_backgrounds);
         i = 0;
         cacheImage("title", "gui/title.png");
         cacheImage("background", "backgrounds/menus/still_menu.png");
 
-        GuiButton button = new GuiButton(new Location(300,300),"Continue", ()->{
-            Main.getWindow().getScreen().getCamera().queueBoard(new LevelScene(1));
+        GuiButton button = new GuiButton(new Location(300, 300), "Continue", 150, 24, () -> {
+            Main.getWindow().getScreen().queueScene(SceneManager.getLevelScene(1));
         });
         gui_elements.add(button);
-        Main.getWindow().addMouseListener(this);
-        Main.getWindow().addMouseMotionListener(this);
+        button.display();
+
+       AudioManager.playSound(Sounds.MUSIC_BACKGROUND_1,-10F);
+
     }
 
     private void cacheImage(String name, String path) {
@@ -64,7 +70,6 @@ public class MenuScene implements Scene, MouseMotionListener, MouseListener {
         }
 
 
-
 //        g.drawImage(background,0,0,(int) camera.getViewport().getWidth(), (int) camera.getViewport().getHeight(), null);
     }
 
@@ -75,25 +80,26 @@ public class MenuScene implements Scene, MouseMotionListener, MouseListener {
 
 
     @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
+
+    @Override
     public void mouseClicked(MouseEvent e) {
 
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-        for (GuiElement element : gui_elements) {
-            if (element.contains(new Location(e.getPoint().getX() - 8, e.getY() - 31)))
-                element.click();
-        }
-    }
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        for (GuiElement element : gui_elements) {
-            if (element.clicked)
-                element.unclick();
-        }
-    }
 
     @Override
     public void mouseEntered(MouseEvent e) {
@@ -111,11 +117,32 @@ public class MenuScene implements Scene, MouseMotionListener, MouseListener {
     }
 
     @Override
+    public void mousePressed(MouseEvent e) {
+        for (GuiElement element : gui_elements) {
+            if (element.contains())
+                element.click();
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        for (GuiElement element : gui_elements) {
+            if (element.clicked)
+                element.unclick();
+        }
+    }
+
+    @Override
     public void mouseMoved(MouseEvent e) {
         for (GuiElement element : gui_elements) {
-            if (element.contains(new Location(e.getPoint().getX()-8, e.getY()-31)))
+            if (element.contains())
                 element.hover();
             else element.unhover();
         }
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+
     }
 }

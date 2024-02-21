@@ -1,56 +1,33 @@
 package com.quickscythe.titanium.utils;
 
 import com.quickscythe.titanium.game.object.GameObject;
-import com.quickscythe.titanium.game.object.Platform;
-import com.quickscythe.titanium.game.object.entity.Player;
+import com.quickscythe.titanium.utils.sprites.Sprite;
+import com.quickscythe.titanium.utils.sprites.SpriteSheet;
+import com.quickscythe.titanium.utils.sprites.SpriteSheetManager;
 import com.studiohartman.jamepad.ControllerManager;
 import org.json2.JSONObject;
 
 import java.awt.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class GameUtils {
 
-    private static final List<GameObject> allGameObjects = new ArrayList<>();
-    private static boolean debug = false;
+    public static final int TILE_SIZE = 64;
 
+    private static final List<GameObject> allGameObjects = new ArrayList<>();
+    private static final InputManager INPUT_MANAGER = new InputManager();
+    private static boolean debug = false;
     private static ControllerManager controllerManager = null;
 
-    public static GameObject spawn(JSONObject json) {
-        GameObject object = createObject(decodeLocation(json.getJSONObject("location")), ObjectType.valueOf(json.getString("type").toUpperCase()).getObjectClass());
-        if(object instanceof Platform){
-            Platform platform = (Platform) object;
-            if(json.has("width")){
-                platform.setWidth(json.getInt("width"));
-            }
-        }
-        allGameObjects.add(object);
-        return object;
+    private static boolean paused = false;
+
+
+    public static InputManager getInputManager() {
+        return INPUT_MANAGER;
     }
 
-    private static GameObject createObject(Location loc, Class<? extends GameObject> objectClass){
-        try {
-            Constructor<? extends GameObject> con = objectClass.getConstructor(Location.class);
-            GameObject obj = (GameObject) con.newInstance(loc);
-//            System.out.println(obj.getLocation().getX() + ", " + obj.getLocation().getY());
-//            System.out.println(loc.getX() + ", " + loc.getY());
-
-            return obj;
-        } catch (NoSuchMethodException | InstantiationException | InvocationTargetException |
-                 IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static GameObject spawn(Location loc, Class<? extends GameObject> objectClass) {
-        GameObject object = createObject(loc, objectClass);
-        allGameObjects.add(object);
-        return object;
-    }
 
     public static Location decodeLocation(JSONObject json) {
         return new Location(json.getDouble("x"), json.getDouble("y"));
@@ -60,12 +37,25 @@ public class GameUtils {
         return new JSONObject("{\"x\":" + location.getX() + ",\"y\":" + location.getY() + "}");
     }
 
+    public static void togglePaused() {
+        paused = !paused;
+    }
+
+    public static void paused(boolean set_paused) {
+        paused = set_paused;
+    }
+
+    public static boolean paused() {
+        return paused;
+    }
+
     public static void toggleDebug() {
         setDebug(!debug);
     }
 
     public static void setDebug(boolean set) {
         debug = set;
+        System.out.println("Debug is " + debug);
 
     }
 
@@ -90,22 +80,14 @@ public class GameUtils {
         return controllerManager;
     }
 
-
-
-    public enum ObjectType {
-        PLAYER(Player.class), PLATFORM(Platform.class);
-
-        Class<? extends GameObject> clazz;
-
-        ObjectType(Class<? extends GameObject> clazz) {
-            this.clazz = clazz;
-        }
-
-        public Class<? extends GameObject> getObjectClass(){
-            return clazz;
-        }
-
+    public static Sprite decodeSprite(JSONObject metadata) {
+        return new Sprite(SpriteSheetManager.createSpriteSheet(metadata.getString("source"), metadata.getInt("width"), metadata.getInt("height")), metadata.getInt("x"), metadata.getInt("y"), metadata.getInt("width"), metadata.getInt("height"));
     }
+
+    public static JSONObject encodeSprite(Sprite sprite) {
+        return sprite.getMetadata();
+    }
+
 
     public enum Backgrounds {
 
@@ -117,8 +99,8 @@ public class GameUtils {
             this.folder_name = folder_name;
         }
 
-        public void loadMap(Map<Integer, Image> map){
-            switch(this){
+        public void loadMap(Map<Integer, Image> map) {
+            switch (this) {
                 case MENU:
                     map.put(1, Resources.getImage("backgrounds/menus/parallax/sky.png"));
                     map.put(2, Resources.getImage("backgrounds/menus/parallax/clouds_1.png"));

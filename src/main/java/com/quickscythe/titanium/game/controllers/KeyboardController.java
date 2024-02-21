@@ -1,55 +1,56 @@
 package com.quickscythe.titanium.game.controllers;
 
-import com.quickscythe.titanium.Main;
 import com.quickscythe.titanium.utils.Direction;
+import com.quickscythe.titanium.utils.GameUtils;
+import com.quickscythe.titanium.utils.InputListener;
 
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class KeyboardController implements EntityController, KeyListener {
+public class KeyboardController implements EntityController, InputListener {
 
-    Map<String, Direction> keybinds = new HashMap<>();
-    List<String> keys_pressed = new ArrayList<>();
+    private final Map<ControllerRequest, Integer> KEYBINDS = new HashMap<>();
+    private final List<Integer> PRESSED_KEYS = new ArrayList<>();
 
-    public KeyboardController(){
-        keybinds.put(KeyEvent.VK_SPACE + "",Direction.UP);
-        keybinds.put(KeyEvent.VK_S+ "",Direction.DOWN);
-        keybinds.put(KeyEvent.VK_A+ "",Direction.LEFT);
-        keybinds.put(KeyEvent.VK_D+ "",Direction.RIGHT);
-        Main.getWindow().getScreen().addKeyListener(this);
+
+    public KeyboardController() {
+        GameUtils.getInputManager().addListener(this);
+        KEYBINDS.put(ControllerRequest.UP, KeyEvent.VK_W);
+        KEYBINDS.put(ControllerRequest.DOWN, KeyEvent.VK_S);
+        KEYBINDS.put(ControllerRequest.LEFT, KeyEvent.VK_A);
+        KEYBINDS.put(ControllerRequest.RIGHT, KeyEvent.VK_D);
+        KEYBINDS.put(ControllerRequest.PAUSE, KeyEvent.VK_ESCAPE);
+        KEYBINDS.put(ControllerRequest.MENU, KeyEvent.VK_E);
     }
 
-
-    private int getKeybind(Direction direction){
-        for(Map.Entry<String, Direction> entry : keybinds.entrySet()){
-            if(entry.getValue().equals(direction)) return Integer.parseInt(entry.getKey());
-        }
-        return -1;
+    private int getKeybind(ControllerRequest request) {
+        return KEYBINDS.getOrDefault(request, -1);
     }
 
 
     @Override
     public boolean requestingUp() {
-        return keys_pressed.contains(getKeybind(Direction.UP) + "");
+        return PRESSED_KEYS.contains(getKeybind(ControllerRequest.UP));
     }
 
     @Override
     public boolean requestingDown() {
-        return keys_pressed.contains(getKeybind(Direction.DOWN) + "");
+        return PRESSED_KEYS.contains(getKeybind(ControllerRequest.DOWN));
     }
 
     @Override
     public boolean requestingLeft() {
-        return keys_pressed.contains(getKeybind(Direction.LEFT) + "");
+        return PRESSED_KEYS.contains(getKeybind(ControllerRequest.LEFT));
     }
 
     @Override
     public boolean requestingRight() {
-        return keys_pressed.contains(getKeybind(Direction.RIGHT) + "");
+        return PRESSED_KEYS.contains(getKeybind(ControllerRequest.RIGHT));
     }
 
     @Override
@@ -63,18 +64,69 @@ public class KeyboardController implements EntityController, KeyListener {
     }
 
     @Override
+    public boolean requestingPause() {
+        return PRESSED_KEYS.contains(getKeybind(ControllerRequest.PAUSE));
+    }
+
+    @Override
+    public boolean requestingMenu() {
+        return PRESSED_KEYS.contains(getKeybind(ControllerRequest.MENU));
+    }
+
+    @Override
     public void keyTyped(KeyEvent e) {
 
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        keys_pressed.remove(e.getKeyCode()+ "");
-        keys_pressed.add(e.getKeyCode() + "");
+        System.out.println("Key Pressed");
+        PRESSED_KEYS.remove(((Object) e.getKeyCode()));
+        PRESSED_KEYS.add(e.getKeyCode());
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        keys_pressed.remove(e.getKeyCode()+ "");
+        PRESSED_KEYS.remove(((Object) e.getKeyCode()));
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+
     }
 }

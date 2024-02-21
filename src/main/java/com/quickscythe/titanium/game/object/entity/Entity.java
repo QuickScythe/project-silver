@@ -3,7 +3,6 @@ package com.quickscythe.titanium.game.object.entity;
 import com.quickscythe.titanium.game.Camera;
 import com.quickscythe.titanium.game.controllers.EntityController;
 import com.quickscythe.titanium.game.object.GameObject;
-import com.quickscythe.titanium.game.object.Platform;
 import com.quickscythe.titanium.utils.Direction;
 import com.quickscythe.titanium.utils.GameUtils;
 import com.quickscythe.titanium.utils.Location;
@@ -32,16 +31,9 @@ public class Entity extends GameObject {
     public Entity(Location location) {
         super(location);
         collision_box = new Rectangle((int) (getBounds().getX() - 1), (int) (getBounds().getY() - 1), (int) (getBounds().getWidth() + 2), (int) (getBounds().getHeight() + 2));
-        this.width = 20;
-        this.height = 20;
 
     }
 
-    @Override
-    public void setImage(BufferedImage image) {
-
-        super.setImage(image);
-    }
 
     @Override
     public void draw(Graphics g, Camera camera) {
@@ -66,10 +58,9 @@ public class Entity extends GameObject {
         if (GameUtils.debug()) {
             g.setColor(Color.BLUE);
             g.drawLine(getRelativeX(camera), getRelativeY(camera), (int) (getRelativeX(camera) + getVelocity().getX() * 10), (int) (getRelativeY(camera) - getVelocity().getY() * 10));
-            g.drawRect((int) ((getRelativeX(camera) + velocity.getX() * 1.2) - collision_box.getWidth() / 2), (int) ((getRelativeY(camera) + velocity.getY() * 1.2) - collision_box.getHeight() / 2), (int) collision_box.getWidth(), (int) collision_box.getHeight());
+            g.drawRect((int) ((getRelativeX(camera)) - getBounds().getWidth() / 2), (int) ((getRelativeY(camera)) - getBounds().getHeight() / 2), (int) getBounds().getWidth(), (int) getBounds().getHeight());
             g.setColor(Color.MAGENTA);
-            if (GameUtils.debug())
-                g.drawRect(collision_box.x, collision_box.y, collision_box.width, collision_box.height);
+            g.drawRect((int) (collision_box.x - camera.getViewport().getMinX()), (int) (collision_box.y - camera.getViewport().getMinY()), collision_box.width, collision_box.height);
         }
 //        (int) (((bounds.getX() + (width / 2)) - camera.getViewport().getX()) * 1)
         g.setColor(color);
@@ -98,12 +89,12 @@ public class Entity extends GameObject {
 
 //        velocity.add(0, -0.5);
 
-        if (!GameUtils.debug()) {
-            if (!collisions.contains(Direction.DOWN)) velocity.add(0, -0.2);
-            else if (velocity.getY() < 0) velocity.setY(0);
-        }
-        if (collisions.contains(Direction.UP) && velocity.getY() > 0) velocity.setY(0);
-        velocity.divide(1.2, 1);
+//        if (!GameUtils.debug()) {
+//            if (!collisions.contains(Direction.DOWN)) velocity.add(0, -0.2);
+//            else if (velocity.getY() < 0) velocity.setY(0);
+//        }
+//        if (collisions.contains(Direction.UP) && velocity.getY() > 0) velocity.setY(0);
+        velocity.divide(1.2, 1.2);
         if (Math.abs(velocity.getX()) < 0.006) velocity.setX(0);
         if (Math.abs(velocity.getY()) < 0.006) velocity.setY(0);
 
@@ -112,26 +103,24 @@ public class Entity extends GameObject {
         directions.clear();
 
         for (EntityController cont : controllers) {
-            if (cont.requestingUp() && (GameUtils.debug() || collisions.contains(Direction.DOWN))) {
-                jump();
-            }
-
-//            if(cont.requestingUp()) directions.add(Direction.UP);
+            if (cont.requestingUp()) directions.add(Direction.UP);
             if (cont.requestingDown()) directions.add(Direction.DOWN);
             if (cont.requestingLeft()) directions.add(Direction.LEFT);
             if (cont.requestingRight()) directions.add(Direction.RIGHT);
         }
 
         for (Direction dir : directions) {
+            if (collisions.contains(dir)) continue;
             switch (dir) {
                 case UP:
+
                     if (velocity.getY() < max_speed) velocity.add(0, accel);
                     break;
                 case LEFT:
                     if (velocity.getX() > -max_speed) velocity.add(-accel, 0);
                     break;
                 case DOWN:
-                    if (velocity.getY() > -max_speed) velocity.add(0, -accel * 0.7);
+                    if (velocity.getY() > -max_speed) velocity.add(0, -accel);
                     break;
                 case RIGHT:
                     if (velocity.getX() < max_speed) velocity.add(accel, 0);
@@ -178,41 +167,35 @@ public class Entity extends GameObject {
 
     }
 
-    private void jump() {
-        if (GameUtils.debug()) {
-            getVelocity().setY(getVelocity().getY() + accel);
-        } else getVelocity().setY(6);
-    }
 
     private void checkCollisionDirection(GameObject object) {
 
         if (collision_box.getMaxX() > object.getBounds().getMinX() && collision_box.getMaxX() < object.getBounds().getMinX() + velocity.getSpeed() + 3) {
-            if (!(object instanceof Platform)) {
+            if (object.collides(Direction.RIGHT)) {
                 if (!collisions.contains(Direction.RIGHT)) collisions.add(Direction.RIGHT);
-                getLocation().setX(getLocation().getX() - 0.05);
+//                getLocation().setX(getLocation().getX() - 0.5);
             }
 
 
         }
         if (collision_box.getMinX() < object.getBounds().getMaxX() && collision_box.getMinX() > object.getBounds().getMaxX() - velocity.getSpeed() - 3) {
-            if (!(object instanceof Platform)) {
+            if (object.collides(Direction.LEFT)) {
                 if (!collisions.contains(Direction.LEFT)) collisions.add(Direction.LEFT);
-                getLocation().setX(getLocation().getX() + 0.05);
+//                getLocation().setX(getLocation().getX() + 0.5);
             }
         }
 
         if (collision_box.getMaxY() > object.getBounds().getMinY() && collision_box.getMaxY() < object.getBounds().getMinY() + velocity.getSpeed() + 3) {
-            if (!collisions.contains(Direction.DOWN)) collisions.add(Direction.DOWN);
-
-            if (object instanceof Platform && directions.contains(Direction.DOWN)) {
-                collisions.remove(Direction.DOWN);
+            if (object.collides(Direction.DOWN)) {
+                if (!collisions.contains(Direction.DOWN)) collisions.add(Direction.DOWN);
+//                getLocation().setY(getLocation().getY() - 0.5);
             }
-            if(getVelocity().getY() <0)
-            getLocation().setY(object.getLocation().getY() - (object.getBounds().getHeight() / 2) - (collision_box.getHeight() / 2) - 4);
+
         }
         if (collision_box.getMinY() < object.getBounds().getMaxY() && collision_box.getMinY() > object.getBounds().getMaxY() - velocity.getSpeed() - 3) {
-            if (!(object instanceof Platform)) {
+            if (object.collides(Direction.UP)) {
                 if (!collisions.contains(Direction.UP)) collisions.add(Direction.UP);
+//                getLocation().setY(getLocation().getY() + 0.5);
             }
 //            getLocation().setY(object.getLocation().getY() + (object.getBounds().getHeight() / 2) + (collision_box.getHeight() / 2)+2);
         }
@@ -221,11 +204,11 @@ public class Entity extends GameObject {
     }
 
     double predictX() {
-        return getLocation().getX() + velocity.getX();
+        return getLocation().getX() + velocity.getX()*2;
     }
 
     double predictY() {
-        return getLocation().getY() - velocity.getY();
+        return getLocation().getY() - velocity.getY()*2;
     }
 
 
