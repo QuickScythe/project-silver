@@ -2,10 +2,8 @@ package com.quickscythe.silver.utils.sounds;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import javazoom.jl.player.advanced.PlaybackListener;
 
-public class GameSound extends PlaybackListener implements Runnable {
-
+public class GameSound implements Runnable {
 
 
     public void play() {
